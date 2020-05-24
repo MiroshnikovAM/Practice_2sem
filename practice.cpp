@@ -2,62 +2,76 @@
 
 using namespace std;
 
-void FillData(INPUT_DATA & data) {
+void GetParams(PARAMS & params) {
     // Do not delete it's for debug
-    /*
-    data.k = 4;
-    data.M = new size_t [data.k];
-    for (size_t i = 0; i < data.k; i++) {
-        data.M[i] = i + 1;
+    params.k = 4;
+    params.M = new size_t [params.k];
+    // for (size_t i = 0; i < params.k; i++) {
+    //     params.M[i] = i + 1;
+    // }
+    params.M[0] = 3;
+    params.M[1] = 2;
+    params.M[2] = 4;
+    params.M[3] = 1;
+    params.T = 2000;
+    params.N = 5;
+    params.l = 2;
+    params.A = new double* [params.l];
+    for (size_t i = 0; i < params.l; i++) {
+        params.A[i] = new double [params.k+1];
+        // for (size_t j = 0; j < params.k+1; j++) {
+        //     params.A[i][j] = 1;
+        // }
     }
-    data.T = 2000;
-    data.N = 5;
-    data.l = 2;
-    data.A = new double* [data.l];
-    for (size_t i = 0; i < data.l; i++) {
-        data.A[i] = new double [data.k+1];
-        for (size_t j = 0; j < data.k+1; j++) {
-            data.A[i][j] = 1;
+    params.A[0][0] = 0;
+    params.A[0][1] = 0.1;
+    params.A[0][2] = 0.01;
+    params.A[0][3] = 12;
+    params.A[0][4] = 0.5;
+    params.A[1][0] = 0;
+    params.A[1][1] = -0.1;
+    params.A[1][2] = -0.01;
+    params.A[1][3] = 9;
+    params.A[1][4] = 0.45;
+   /*
+    cout << "Input k = ";
+    cin >> params.k;
+    cout << "Input l = ";
+    cin >> params.l;
+    cout << "Input M[" << params.k << "] : " << endl;
+    params.M = new size_t [params.k];
+    for (size_t i = 0; i < params.k; i++) {
+        cin >> params.M[i];
+    }
+    cout << "Input T as time in milleseconds (2000 for 2 sec) = ";
+    cin >> params.T;
+    cout << "Input N = ";
+    cin >> params.N;
+    cout << "Input A[" << params.l << "][" << params.k + 1 << "] : " << endl;
+    params.A = new double* [params.l];
+    for (size_t i = 0; i < params.l; i++) {
+        params.A[i] = new double [params.k+1];
+        for (size_t j = 0; j < params.k+1; j++) {
+            cin >> params.A[i][j];
         }
     }
     */
-    cout << "Input k = ";
-    cin >> data.k;
-    cout << "Input l = ";
-    cin >> data.l;
-    cout << "Input M[" << data.k << "] : " << endl;
-    data.M = new size_t [data.k];
-    for (size_t i = 0; i < data.k; i++) {
-        cin >> data.M[i];
-    }
-    cout << "Input T as time in milleseconds (2000 for 2 sec) = ";
-    cin >> data.T;
-    cout << "Input N = ";
-    cin >> data.N;
-    cout << "Input A[" << data.l << "][" << data.k + 1 << "] : " << endl;
-    data.A = new double* [data.l];
-    for (size_t i = 0; i < data.l; i++) {
-        data.A[i] = new double [data.k+1];
-        for (size_t j = 0; j < data.k+1; j++) {
-            cin >> data.A[i][j];
-        }
-    }
 }
 
-void DisposeData(INPUT_DATA & data) {
-    if (data.M) {
-        delete data.M;
-        data.M = 0;
+void DisposeParams(PARAMS & params) {
+    if (params.M) {
+        delete params.M;
+        params.M = 0;
     }
-    if (data.A) {
-        for (size_t i = 0; i < data.l; i++) {
-            if (data.A[i]) {
-                delete data.A[i];
-                data.A[i] = 0;
+    if (params.A) {
+        for (size_t i = 0; i < params.l; i++) {
+            if (params.A[i]) {
+                delete params.A[i];
+                params.A[i] = 0;
             }
         }
-        delete data.A;
-        data.A = 0;
+        delete params.A;
+        params.A = 0;
     }
 }
 
@@ -68,9 +82,9 @@ void DisposeVector(double** ptrVector) {
     }
 }
 
-void DisposeMatrix(const INPUT_DATA & data, double*** ptrMatrix) {
+void DisposeMatrix(const PARAMS & params, double*** ptrMatrix) {
     if (*ptrMatrix) {
-        for (size_t i = 0; i < data.N; i++) {
+        for (size_t i = 0; i < params.l; i++) {
             if ((*ptrMatrix)[i]) {
                 delete (*ptrMatrix)[i];
                 (*ptrMatrix)[i] = 0;
@@ -80,35 +94,35 @@ void DisposeMatrix(const INPUT_DATA & data, double*** ptrMatrix) {
     }
 }
 
-void GetCurrentVector(const INPUT_DATA & data, Plant plant, double** ptrVector) {
+void GetCurrentVector(const PARAMS & params, Plant plant, double** ptrVector) {
     if (*ptrVector == 0) {
-        *ptrVector = new double [data.k];
+        *ptrVector = new double [params.k];
     }
-    for (size_t i = 0; i < data.k; i++) {
-        (*ptrVector)[i] = plant_measure(data.M[i], plant);
+    for (size_t i = 0; i < params.k; i++) {
+        (*ptrVector)[i] = plant_measure(params.M[i], plant);
     }
 }
 
-void GetCalculatedVector(const INPUT_DATA & data, double* x, double** pZ) {
+void GetCalculatedVector(const PARAMS & params, double* x, double** pZ) {
     if (*pZ == 0) {
-        *pZ = new double [data.l];
+        *pZ = new double [params.l];
     }
-    for (size_t i = 0; i < data.l; i++) {
-        (*pZ)[i] = data.A[i][0];
-        for (size_t j = 0; j < data.k; j++) {
-            (*pZ)[i] += data.A[i][j+1] * x[j];
+    for (size_t i = 0; i < params.l; i++) {
+        (*pZ)[i] = params.A[i][0];
+        for (size_t j = 0; j < params.k; j++) {
+            (*pZ)[i] += params.A[i][j+1] * x[j];
         }
     }
 }
 
-void WriteCalculatedVector(const INPUT_DATA & data, char* filename, bool shouldAdd, double* z) {
+void WriteCalculatedVector(const PARAMS & params, char* filename, size_t step, double* z) {
     ofstream file;
-    if (shouldAdd) {
+    if (step) {
         file.open(filename, ios::binary | ios::out | ios::app);
     } else {
         file.open(filename, ios::binary | ios::out | ios::trunc);
     }
-    for (size_t i = 0; i < data.l; i++) {
+    for (size_t i = 0; i < params.l; i++) {
         cout << z[i] << "\t";
         file << z[i] << endl;
     }
@@ -116,36 +130,74 @@ void WriteCalculatedVector(const INPUT_DATA & data, char* filename, bool shouldA
     file.close();
 }
 
-void ReadCalculatedVectors(const INPUT_DATA & data, char* filename, double*** pZZ) {
+void ReadCalculatedVectors(const PARAMS & params, char* filename, double*** pZZ) {
+    *pZZ = new double* [params.l];
+    for (size_t i = 0; i < params.l; i++) {
+        (*pZZ)[i] = new double [params.N];
+    }
     ifstream file;
     file.open(filename, ios::binary | ios::in);
-    *pZZ = new double* [data.N];
-    for (size_t i = 0; i < data.N; i++) {
-        (*pZZ)[i] = new double [data.l];
-        for (size_t j = 0; j < data.l; j++) {
-            file >> (*pZZ)[i][j];
+    for(size_t i = 0; i < params.N; i++) {
+        for (size_t j = 0; j < params.l; j++) {
+            file >> (*pZZ)[j][i];
         }
     }
     file.close();
 }
 
-double CalculateAverage(const INPUT_DATA & data, double* vector) {
+double CalculateAverage(const PARAMS & params, double* vector) {
     double sum = 0;
-    for (size_t i = 0; i < data.N; i++) {
+    for (size_t i = 0; i < params.N; i++) {
         sum += vector[i];
     }
-    return data.N ? sum/data.N : 0;
+    return params.N ? sum/params.N : 0;
 }
 
-double CalculateVariance(const INPUT_DATA & data, double average, double* vector) {
+double CalculateVariance(const PARAMS & params, double average, double* vector) {
     double square_sum = 0;
-    for (size_t i = 0; i < data.N; i++) {
+    for (size_t i = 0; i < params.N; i++) {
         square_sum += vector[i] * vector[i];
     }
-    if (data.N <= 1) {
+    if (params.N <= 1) {
         return 0;
     } else {
-        return (square_sum - data.N * average * average) / (data.N - 1);
+        return (square_sum - params.N * average * average) / (params.N - 1);
     }
 }
 
+void PrintCurrentVector(const PARAMS & params, size_t step, double* vector) {
+    cout << step + 1 << "\t";
+    for (size_t i = 0; i < params.k; i++) {
+        cout << vector[i] << "\t";
+    }
+}
+
+void PrintHeader(const PARAMS & params) {
+    cout << "N\t";
+    for (size_t i = 0; i < params.k; i++) {
+        cout << "X" << i + 1 << "\t";
+    }
+    for (size_t i = 0; i < params.l; i++) {
+        cout << "Z" << i + 1 << "\t";
+    }
+    cout << endl;
+}
+
+void PrintFooter(const PARAMS & params, double average, double variance, size_t step) {
+    for (size_t j = 0; j < params.k; j++) {
+        cout << "\t";
+    }
+    cout << "Zavg[" << step + 1 << "]";
+    for (size_t j = 0; j < step + 1; j++) {
+        cout << "\t";
+    }
+    cout << average << endl;
+    for (size_t j = 0; j < params.k; j++) {
+        cout << "\t";
+    }
+    cout << "S^2 [" << step + 1 << "]";
+    for (size_t j = 0; j < step + 1; j++) {
+        cout << "\t";
+    }
+    cout << variance << endl;
+}
