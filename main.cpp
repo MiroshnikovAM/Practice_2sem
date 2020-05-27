@@ -12,11 +12,11 @@ int main() {
 
     PrintResearchHeader();
     size_t step = 0;
-    double** zz = 0;
     for (double Aicur = params.Aimin; Aicur < params.Aimax; Aicur += params.dAi) {
         params.A[0][params.researchCoeff] = Aicur;
         double* x = 0;
         double* z = 0;
+        double** zz = 0;
         // PrintHeader(params);
         for (size_t i = 0; i < params.N; i++) {
             GetCurrentVector(params, plant, &x);
@@ -42,8 +42,8 @@ int main() {
         variance = CalculateVariance(params, average, zz[0]);
         PrintResearchFooter(Aicur, variance, step + 1);
         step++;
+        DisposeMatrix(params, &zz);
     }
-    DisposeMatrix(params, &zz);
     DisposeParams(params);
     return 0;
 }
