@@ -3,6 +3,7 @@
 using namespace std;
 
 void GetParams(PARAMS & params) {
+    /*
     // Do not delete it's for debug
     params.k = 4;
     params.M = new size_t [params.k];
@@ -33,7 +34,8 @@ void GetParams(PARAMS & params) {
     params.A[1][2] = -0.01;
     params.A[1][3] = 9;
     params.A[1][4] = 0.45;
-   /*
+    */
+
     cout << "Input k = ";
     cin >> params.k;
     cout << "Input l = ";
@@ -55,7 +57,38 @@ void GetParams(PARAMS & params) {
             cin >> params.A[i][j];
         }
     }
-    */
+
+}
+
+void GetTestParams(PARAMS & params) {
+    cout << "Input k = ";
+    cin >> params.k;
+    params.l = 1;
+    cout << "Input M[" << params.k << "] : " << endl;
+    params.M = new size_t [params.k];
+    for (size_t i = 0; i < params.k; i++) {
+        cin >> params.M[i];
+    }
+    cout << "Input T as time in milleseconds (2000 for 2 sec) = ";
+    cin >> params.T;
+    cout << "Input N = ";
+    cin >> params.N;
+    cout << "Input i, number of researched coefficient = ";
+    cin >> params.researchCoeff;
+    cout << "Input A[" << params.l << "][" << params.k + 1 << "] : " << endl;
+    params.A = new double* [params.l];
+    for (size_t i = 0; i < params.l; i++) {
+        params.A[i] = new double [params.k+1];
+        for (size_t j = 0; j < params.k+1; j++) {
+            cin >> params.A[i][j];
+        }
+    }
+    cout << "Input Aimin = ";
+    cin >> params.Aimin;
+    cout << "Input Aimax = ";
+    cin >> params.Aimax;
+    cout << "Input dAi = ";
+    cin >> params.dAi;
 }
 
 void DisposeParams(PARAMS & params) {
@@ -200,4 +233,13 @@ void PrintFooter(const PARAMS & params, double average, double variance, size_t 
         cout << "\t";
     }
     cout << variance << endl;
+}
+
+void PrintResearchHeader() {
+    cout << endl;
+    cout << "N" << "\t" << "Ai  " << "\t" << "Si^2" << endl;
+}
+
+void PrintResearchFooter(double Aicur, double variance, size_t step) {
+    cout << step << "\t" << Aicur << "\t" << variance << endl;
 }

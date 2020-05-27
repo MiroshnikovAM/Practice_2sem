@@ -2,7 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-//#include <windows.h>
+#include <windows.h>
 #include "plant.h"
 
 struct PARAMS {
@@ -12,9 +12,15 @@ struct PARAMS {
     size_t N;
     size_t l;
     double** A;
+    // research part
+    size_t researchCoeff;
+    double Aimin;
+    double Aimax;
+    double dAi;
 };
 
 void GetParams(PARAMS & params);
+void GetTestParams(PARAMS & params);
 void DisposeParams(PARAMS & params);
 void DisposeVector(double** ptrVector);
 void DisposeMatrix(const PARAMS & params, double*** ptrMatrix);
@@ -27,3 +33,5 @@ double CalculateVariance(const PARAMS & params, double average, double* vector);
 void PrintCurrentVector(const PARAMS & params, size_t step, double* vector);
 void PrintHeader(const PARAMS & params);
 void PrintFooter(const PARAMS & params, double average, double variance, size_t step);
+void PrintResearchHeader();
+void PrintResearchFooter(double Aicur, double variance, size_t step);
