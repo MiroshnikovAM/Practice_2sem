@@ -61,6 +61,31 @@ void GetParams(PARAMS & params) {
 }
 
 void GetTestParams(PARAMS & params) {
+    /*
+    // Do not delete it's for debug
+    params.k = 4;
+    params.M = new size_t [params.k];
+    params.M[0] = 3;
+    params.M[1] = 2;
+    params.M[2] = 4;
+    params.M[3] = 1;
+    params.T = 2000;
+    params.N = 5;
+    params.l = 1;
+    params.A = new double* [params.l];
+    for (size_t i = 0; i < params.l; i++) {
+        params.A[i] = new double [params.k+1];
+    }
+    params.A[0][0] = 0;
+    params.A[0][1] = 0.1;
+    params.A[0][2] = 0.01;
+    params.A[0][3] = 12;
+    params.A[0][4] = 0.5;
+    params.Aimin = -0.1;
+    params.Aimax = 0.1;
+    params.dAi = 0.01;
+    params.researchCoeff = 2;
+    */
     cout << "Input k = ";
     cin >> params.k;
     params.l = 1;
@@ -89,6 +114,7 @@ void GetTestParams(PARAMS & params) {
     cin >> params.Aimax;
     cout << "Input dAi = ";
     cin >> params.dAi;
+
 }
 
 void DisposeParams(PARAMS & params) {
@@ -123,6 +149,7 @@ void DisposeMatrix(const PARAMS & params, double*** ptrMatrix) {
                 (*ptrMatrix)[i] = 0;
             }
         }
+        delete *ptrMatrix;
         *ptrMatrix = 0;
     }
 }
@@ -242,4 +269,27 @@ void PrintResearchHeader() {
 
 void PrintResearchFooter(double Aicur, double variance, size_t step) {
     cout << step << "\t" << Aicur << "\t" << variance << endl;
+}
+
+void GetSensorsData(const PARAMS & params, Plant plant, double*** pxx) {
+    *pxx = new double* [params.N];
+    for (size_t i = 0; i < params.N; i++) {
+        (*pxx)[i] = new double [params.k];
+        GetCurrentVector(params, plant, &((*pxx)[i]));
+        // cout << i << " GOD DAMNED" << endl;
+        Sleep(params.T);
+    }
+}
+
+void DisposeSensorData(const PARAMS & params, double*** pxx) {
+        if (*pxx) {
+        for (size_t i = 0; i < params.N; i++) {
+            if ((*pxx)[i]) {
+                delete (*pxx)[i];
+                (*pxx)[i] = 0;
+            }
+        }
+        delete *pxx;
+        *pxx = 0;
+    }
 }

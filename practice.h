@@ -35,3 +35,5 @@ void PrintHeader(const PARAMS & params);
 void PrintFooter(const PARAMS & params, double average, double variance, size_t step);
 void PrintResearchHeader();
 void PrintResearchFooter(double Aicur, double variance, size_t step);
+void GetSensorsData(const PARAMS & params, Plant plant, double*** pxx);
+void DisposeSensorData(const PARAMS & params, double*** pxx);

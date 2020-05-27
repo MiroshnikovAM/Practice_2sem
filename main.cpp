@@ -10,22 +10,19 @@ int main() {
     plant_init(plant);
     char* filename = "data.raw";
 
+    double** xx = 0;
+    GetSensorsData(params, plant, &xx);
+
     PrintResearchHeader();
     size_t step = 0;
     for (double Aicur = params.Aimin; Aicur < params.Aimax; Aicur += params.dAi) {
         params.A[0][params.researchCoeff] = Aicur;
-        double* x = 0;
         double* z = 0;
         double** zz = 0;
-        // PrintHeader(params);
         for (size_t i = 0; i < params.N; i++) {
-            GetCurrentVector(params, plant, &x);
-            GetCalculatedVector(params, x, &z);
-            // PrintCurrentVector(params, i, x);
+            GetCalculatedVector(params, xx[i], &z);
             WriteCalculatedVector(params, filename, i, z);
-            Sleep(params.T);
         }
-        DisposeVector(&x);
         DisposeVector(&z);
 
         ReadCalculatedVectors(params, filename, &zz);
@@ -44,6 +41,7 @@ int main() {
         step++;
         DisposeMatrix(params, &zz);
     }
+    DisposeSensorData(params, &xx);
     DisposeParams(params);
     return 0;
 }
