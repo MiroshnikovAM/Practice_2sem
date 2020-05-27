@@ -14,6 +14,7 @@ int main() {
     size_t step = 0;
     double** zz = 0;
     for (double Aicur = params.Aimin; Aicur < params.Aimax; Aicur += params.dAi) {
+        params.A[0][params.researchCoeff] = Aicur;
         double* x = 0;
         double* z = 0;
         // PrintHeader(params);
@@ -37,7 +38,6 @@ int main() {
             // PrintFooter(params, average, variance, i);
         }
         */
-        params.A[0][params.researchCoeff] = Aicur;
         average = CalculateAverage(params, zz[0]);
         variance = CalculateVariance(params, average, zz[0]);
         PrintResearchFooter(Aicur, variance, step + 1);

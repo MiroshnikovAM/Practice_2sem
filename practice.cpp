@@ -156,10 +156,10 @@ void WriteCalculatedVector(const PARAMS & params, char* filename, size_t step, d
         file.open(filename, ios::binary | ios::out | ios::trunc);
     }
     for (size_t i = 0; i < params.l; i++) {
-        cout << z[i] << "\t";
+        // cout << z[i] << "\t";
         file << z[i] << endl;
     }
-    cout << endl;
+    // cout << endl;
     file.close();
 }
 
